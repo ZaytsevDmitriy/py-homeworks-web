@@ -4,6 +4,10 @@ services:
   db:
     image: postgres
     restart: always
+    networks:
+      - backend
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
     environment:
       - POSTGRES_DB=crud
       - POSTGRES_USER=admin
@@ -19,6 +23,8 @@ services:
     image: django
     build: .
     command: python manage.py migrate --noinput
+    networks:
+      - backend
     depends_on:
       db:
         condition: service_healthy
@@ -26,14 +32,32 @@ services:
   django:
     build: .
     container_name: django
-    command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn hello_django.wsgi:application --bind 0.0.0.0:8000
+    networks:
+      - backend
     volumes:
       - .:/app
     ports:
-      - "8000:8000"
+      - 8000:8000
     depends_on:
       - migration
       - db
+
+  nginx:
+    build: ./nginx
+    networks:
+      - backend
+    ports:
+      - 1337:80
+    depends_on:
+      - django
+
+networks:
+  backend:
+    name: backend
+
+volumes:
+  postgres_data:
 
 
 

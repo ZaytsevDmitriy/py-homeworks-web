@@ -5,7 +5,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import func
 
-engine = create_engine('postgresql://admin:1234@127.0.0.1:5432/flask_netology')
+engine = create_engine('postgresql://admin:1234@127.0.0.1:5433/flask_netology')
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
 
@@ -15,7 +15,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True)
     user_name = Column(String, unique=True)
-    # email = Column(String)
+    email = Column(String)
     registration_time = Column(DateTime, server_default=func.now())
     password = Column(String, nullable=False)
 
@@ -59,6 +59,5 @@ class UserView(MethodView):
 app.add_url_rule("/user/", view_func=UserView.as_view("register_user"), methods=["POST"])
 
 if __name__ == '__main__':
-    Base.metadata.create_all(engine)
     app.debug = True
     app.run()

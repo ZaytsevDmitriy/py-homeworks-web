@@ -66,7 +66,7 @@ async def save_person_in_db(p_data):
                                       name=name, skin_color=skin_color, species=species, starships=starships,
                                       vehicles=vehicles, person=person
                                       )
-                session.add(person)  # добавляем данные юзера в сессию
+                session.add(person)
                 session.commit()
 
-Base.metadata.create_all(engine)
+# Base.metadata.create_all(engine)

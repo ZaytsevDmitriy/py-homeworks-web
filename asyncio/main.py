@@ -2,9 +2,11 @@ import asyncio
 
 import aiohttp
 
+from models import save_person_in_db
+
 API_ENDPOINT = 'https://swapi.dev/api/people'
 
-MAX_CHUNK = 10
+
 
 
 async def get_person(person_id: int) -> dict:
@@ -16,7 +18,8 @@ async def get_person(person_id: int) -> dict:
 
 async def main():
     result = await asyncio.gather(*[get_person(i) for i in range(1, 10)])
-    print(result)
+    return result
 
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(save_person_in_db(asyncio.run(main())))
